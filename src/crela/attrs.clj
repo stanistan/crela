@@ -5,17 +5,17 @@
   [:with-nodes
    :with-fields])
 
-(defprotocol ICrawlNode
+(defprotocol INodeForm
   (get-attr-names [form] "Gets symbol names from a form as a list"))
 
-(defrecord CrawlNode [type attrs])
-(defrecord CrawlNodeAttr [type name selector fs])
+(defrecord NodeForm [type attrs])
+(defrecord NodeFormAttr [type name selector fs])
 
 (declare get-attr-name) ;; multimethod below
 
-(extend-protocol ICrawlNode
+(extend-protocol INodeForm
 
-  CrawlNodeAttr
+  NodeFormAttr
   (get-attr-names [form-node]
     [(get-attr-name (:type form-node) (:name form-node))])
 
@@ -27,7 +27,7 @@
   (get-attr-names [nodes]
     (get-attr-names (seq nodes)))
 
-  CrawlNode
+  NodeForm
   (get-attr-names [form]
     (get-attr-names (:attrs form))))
 
@@ -50,7 +50,7 @@
   [type [name opts]]
   (let [opts (if (= '_ opts) nil opts)
         [maybe-selector & fs :as opts] (ensure-vector opts)]
-    (->CrawlNodeAttr
+    (->NodeFormAttr
       type
       name
       (when (selector? maybe-selector) (ensure-vector maybe-selector))
@@ -61,7 +61,7 @@
   (let [type (-> form first name keyword)
         destruct-body (partial destruct-form-body type)
         attrs (->> form rest (partition 2) (map destruct-body))]
-    (->CrawlNode type attrs)))
+    (->NodeForm type attrs)))
 
 (defn destruct-forms
   [forms]

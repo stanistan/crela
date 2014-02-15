@@ -12,36 +12,36 @@
 
   ;; for a node
   (attrs/get-attr-names
-    (attrs/->CrawlNodeAttr :with-nodes 'Foo nil []))
+    (attrs/->NodeFormAttr :with-nodes 'Foo nil []))
   => [:foos]
 
   (attrs/get-attr-names
-    (attrs/->CrawlNodeAttr :with-attrs 'foo nil []))
+    (attrs/->NodeFormAttr :with-attrs 'foo nil []))
   => [:foo]
 
   (attrs/get-attr-names
-    (attrs/->CrawlNode
+    (attrs/->NodeForm
       :with-nodes
-      [(attrs/->CrawlNodeAttr :with-nodes 'Foo nil [])
-       (attrs/->CrawlNodeAttr :with-nodes 'Bar nil [])]))
+      [(attrs/->NodeFormAttr :with-nodes 'Foo nil [])
+       (attrs/->NodeFormAttr :with-nodes 'Bar nil [])]))
   => [:foos :bars]
 
   (attrs/get-attr-names
-    [(attrs/->CrawlNodeAttr :with-nodes 'Foo nil [])
-     (attrs/->CrawlNodeAttr :with-nodes 'Bar nil [])])
+    [(attrs/->NodeFormAttr :with-nodes 'Foo nil [])
+     (attrs/->NodeFormAttr :with-nodes 'Bar nil [])])
   => [:foos :bars])
 
 (fact "destruct-form"
 
   (attrs/destruct-form
     '(with-fields foo nil))
-  => (attrs/->CrawlNode :with-fields
-      [(attrs/->CrawlNodeAttr :with-fields 'foo nil [])])
+  => (attrs/->NodeForm :with-fields
+      [(attrs/->NodeFormAttr :with-fields 'foo nil [])])
 
   (attrs/destruct-form
     '(with-fields foo _))
-  => (attrs/->CrawlNode :with-fields
-      [(attrs/->CrawlNodeAttr :with-fields 'foo nil [])])
+  => (attrs/->NodeForm :with-fields
+      [(attrs/->NodeFormAttr :with-fields 'foo nil [])])
 
   (attrs/destruct-form
     '(with-fields
@@ -51,10 +51,10 @@
       fooz [[:.body]]
       more [first]
       morez [[:.body :.foo :bar] first rest]))
-  => (attrs/->CrawlNode :with-fields
-      [(attrs/->CrawlNodeAttr :with-fields 'foo nil [])
-       (attrs/->CrawlNodeAttr :with-fields 'bar [:.body] [])
-       (attrs/->CrawlNodeAttr :with-fields 'baz [:.body] [])
-       (attrs/->CrawlNodeAttr :with-fields 'fooz [:.body] [])
-       (attrs/->CrawlNodeAttr :with-fields 'more nil [first])
-       (attrs/->CrawlNodeAttr :with-fields 'morez [:.body :.foo :bar] [first rest])]))
+  => (attrs/->NodeForm :with-fields
+      [(attrs/->NodeFormAttr :with-fields 'foo nil [])
+       (attrs/->NodeFormAttr :with-fields 'bar [:.body] [])
+       (attrs/->NodeFormAttr :with-fields 'baz [:.body] [])
+       (attrs/->NodeFormAttr :with-fields 'fooz [:.body] [])
+       (attrs/->NodeFormAttr :with-fields 'more nil [first])
+       (attrs/->NodeFormAttr :with-fields 'morez [:.body :.foo :bar] [first rest])]))
