@@ -45,12 +45,21 @@
 (defmethod create-record
   clojure.lang.Symbol
   [cl data]
-  (map->Record$symbol cl data))
+  (try
+    (map->Record$symbol cl data)
+    (catch Exception e data)))
 
 (defmethod create-record
   java.lang.Class
   [cl data]
-  (map->Record$class cl data))
+  (try
+    (map->Record$class cl data)
+    (catch Exception e data)))
+
+(defmethod create-record
+  nil
+  [_ data]
+  data)
 
 (def symbol->keyword (comp keyword name))
 (def lower-case string/lower-case)

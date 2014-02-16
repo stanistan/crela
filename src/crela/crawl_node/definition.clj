@@ -8,11 +8,9 @@
     (get-attr-names forms))
   Parser
   (parse [this html]
-    (create-record
-      node-name
-      (parse forms html))))
+    (create-record node-name (parse forms html))))
 
-(defn destruct->CrawlNodeDefinition
+(defn destruct
   [node-name & forms]
   (->CrawlNodeDefinition
     node-name
