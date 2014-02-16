@@ -1,4 +1,5 @@
-(ns crela.utils)
+(ns crela.utils
+  (:require [clojure.string :as string]))
 
 (defn ensure-vector
   [x]
@@ -50,3 +51,6 @@
   java.lang.Class
   [cl data]
   (map->Record$class cl data))
+
+(def symbol->keyword (comp keyword name))
+(def lower-case string/lower-case)
