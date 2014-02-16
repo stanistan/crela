@@ -5,42 +5,42 @@
             [crela.node-form.parser :refer [parse]]))
 
 (fact "attr-name simple"
-  (attr/attr-name :with-nodes 'Foo) => :foos
+  (attr/attr-name :node 'Foo) => :foos
   (attr/attr-name :foo 'foo) => :foo)
 
 (fact "get-attr-names record"
-  (get-attr-names (->NodeFormAttr :with-nodes 'Foo nil [])) => [:foos]
-  (get-attr-names (->NodeFormAttr :with-fields 'n nil [])) => [:n])
+  (get-attr-names (->NodeFormAttr :node 'Foo nil [])) => [:foos]
+  (get-attr-names (->NodeFormAttr :field 'n nil [])) => [:n])
 
 (fact "get-attr-names lists"
   (get-attr-names
-    [(->NodeFormAttr :with-nodes 'Foo nil [])
-     (->NodeFormAttr :with-fields 'a nil [])])
+    [(->NodeFormAttr :node 'Foo nil [])
+     (->NodeFormAttr :field 'a nil [])])
   => [:foos :a]
 
   (get-attr-names
     (list
-      (->NodeFormAttr :with-nodes 'Foo nil [])
-      (->NodeFormAttr :with-fields 'a nil [])))
+      (->NodeFormAttr :node 'Foo nil [])
+      (->NodeFormAttr :field 'a nil [])))
   => [:foos :a])
 
 (fact "mapped-attr-names"
   (attr/mapped-names
-    [(->NodeFormAttr :with-nodes 'Foo nil [])
-     (->NodeFormAttr :with-fields 'a nil [])]
+    [(->NodeFormAttr :node 'Foo nil [])
+     (->NodeFormAttr :field 'a nil [])]
     name symbol)
   => ['foos 'a])
 
 (fact "parse works on an attribute"
 
-  (parse (->NodeFormAttr :with-fields 'a nil []) [])
+  (parse (->NodeFormAttr :field 'a nil []) [])
   => {:a []}
 
-  (parse (->NodeFormAttr :with-fields 'foo nil [first]) [1 2])
+  (parse (->NodeFormAttr :field 'foo nil [first]) [1 2])
   => {:foo 1}
 
   (parse
-    [(->NodeFormAttr :with-fields 'first nil [first])
-     (->NodeFormAttr :with-fields 'rest nil [rest])]
+    [(->NodeFormAttr :field 'first nil [first])
+     (->NodeFormAttr :field 'rest nil [rest])]
     [1 2 3 4])
   => {:first 1 :rest [2 3 4]})

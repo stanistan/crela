@@ -8,7 +8,7 @@
   (if selector (html/select html selector) html))
 
 (defmulti attr-name (fn [type name] type))
-(defmethod attr-name :with-nodes [_ n]
+(defmethod attr-name :node [_ n]
   (pluralize-name n))
 (defmethod attr-name :default [_ n]
   (symbol->keyword n))

@@ -12,9 +12,19 @@
       (ensure-selector maybe-selector)
       (scrape-fs type name fs))))
 
+(def form-types
+  {'with-fields :field
+   'with-nodes :node})
+
+(defn get-form-type
+  [form-name]
+  (if-let [type (get form-types form-name)]
+    type
+    (throw (Exception. "Invalid Form Type"))))
+
 (defn destruct-form
   [form]
-  (let [type (-> form first name keyword)
+  (let [type (get-form-type (first form))
         destruct-body (partial destruct-form-body type)]
     (->> form
          rest

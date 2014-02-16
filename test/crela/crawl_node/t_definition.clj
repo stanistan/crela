@@ -15,7 +15,7 @@
     n)
   => (->CrawlNodeDefinition
       'Foo
-      [(->NodeFormAttr :with-fields 'foo nil [])]))
+      [(->NodeFormAttr :field 'foo nil [])]))
 
 (defrecord Foo [foo c])
 (let [data [:a :b :c :d]]
