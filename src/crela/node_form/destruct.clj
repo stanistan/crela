@@ -20,7 +20,7 @@
   [form-name]
   (if-let [type (get form-types form-name)]
     type
-    (throw (Exception. "Invalid Form Type"))))
+    (throw (Exception. (str "Invalid Form Type: " form-name)))))
 
 (defn destruct-form
   [form]
@@ -35,6 +35,6 @@
   [forms]
   (flatten (map destruct-form forms)))
 
-(defn attr-names$symbols
+(defn get-attr-names-as-symbols
   [form]
   (mapped-names form name symbol))

@@ -15,3 +15,7 @@
   (->CrawlNodeDefinition
     node-name
     (destruct-forms forms)))
+
+(defn get-symbols
+  [crawl-node-def]
+  (get-attr-names-as-symbols crawl-node-def))
