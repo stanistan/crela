@@ -32,7 +32,9 @@
   String
   [crawl-node-name url & opts]
   (let [html (apply url/fetch-html url opts)]
-    (apply scrape crawl-node-name html opts)))
+    (assoc
+      (apply scrape crawl-node-name html opts)
+      :url url)))
 
 (defmethod scrape
   java.net.URL
