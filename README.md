@@ -75,14 +75,20 @@ With `crawl-node`s, we can create relations.
   [url]
   (str "https://news.ycombinator.com/" url))
 
-;; This defines another node
+;; - merges the page-title from HNCommon
+;; - has a recursive relation (so one can potentially do pagination)
 (def-crawl-node HNPage
   (merges HNCommon)
   (with-nodes
     [HNArticle => articles] [[:.subtext :a]
                              #(map get-link-href %)
                              #(filter comments-link? %)
-                             #(map qualify-hn-link %)]))
+                             #(map qualify-hn-link %)]
+    [HNPage => next-page]   [[:.title :a]
+                             #(filter paging-link? %)
+                             #(map get-link-href %)
+                             first
+                             qualify-hn-link]))
 
 (def front-page (scrape HNPage "https://news.ycombinator.com"))
 ;; =>
@@ -94,20 +100,28 @@ With `crawl-node`s, we can create relations.
 ;;   #<Delay@5740f07b: :not-delivered>
 ;;  ,
 ;;  :page-title "Hacker News",
+;;  :next-page #<Delay@63182c3d: :not-delivered>
 ;;  :url "https://news.ycombinator.com
 
 (deref (first (:articles front-page)))
 ;; =>
 ;; #user.HNArticle{.....}
+
+(let [second-page @(:next-page front-page)]
+  @(first (:articles second-page)))
+;; =>
+;; #user.HNArticle{.....}
+
 ```
 
 Without the alias `HNArticle => articles`, the key would default to `hnarticles`.
 
 ## Todo
 
-- Options for Async
+- Options for Async (seems out of the scope of this library)
 - A better delayed type (with some semantics for reading/writing), probably not happening
 - tests for the Core namespace
+- publish versioned on clojars and add that to the readme (dep on tests)
 
 ## License
 

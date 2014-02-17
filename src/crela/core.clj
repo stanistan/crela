@@ -82,6 +82,7 @@
                 (fn [attr]
                   (let [k (attr-name attr)
                         urls (get found-data k)
-                        node-name (:name attr)]
-                    [k (map #(delay (bound-scrape-fn node-name %)) urls)]))
+                        node-name (:name attr)
+                        delay-fn #(delay (bound-scrape-fn node-name %))]
+                    [k (if (sequential? urls) (map delay-fn urls) (delay-fn urls))]))
                 (node-attrs crawl-node-def)))))
