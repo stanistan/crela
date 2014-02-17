@@ -1,5 +1,7 @@
 # crela
 
+[![Build Status](https://travis-ci.org/stanistan/crela.png?branch=master)](https://travis-ci.org/stanistan/crela)
+
 A Clojure library designed to crawl the internet in a relational fashion.
 
 ## Usage
