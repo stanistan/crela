@@ -7,14 +7,14 @@
 
   (d/destruct-form
     '(with-fields title _))
-  => [(->NodeFormAttr :field 'title nil [] :title)]
+  => {:field [(->NodeFormAttr :field 'title nil [] :title)] }
 
   (d/destruct-form
     '(with-fields
       title _
       name :key))
-  => [(->NodeFormAttr :field 'title nil [] :title)
-      (->NodeFormAttr :field 'name [:key] [] :name)]
+  => {:field [(->NodeFormAttr :field 'title nil [] :title)
+              (->NodeFormAttr :field 'name [:key] [] :name)]}
 
   (d/destruct-form
     '(with-fields
@@ -22,7 +22,7 @@
       name nil
       k [first second]
       another rest))
-  => [(->NodeFormAttr :field 'title [:key] [first second rest] :title)
-      (->NodeFormAttr :field 'name nil [] :name)
-      (->NodeFormAttr :field 'k nil [first second] :k)
-      (->NodeFormAttr :field 'another nil [rest] :another)])
+  => {:field [(->NodeFormAttr :field 'title [:key] [first second rest] :title)
+              (->NodeFormAttr :field 'name nil [] :name)
+              (->NodeFormAttr :field 'k nil [first second] :k)
+              (->NodeFormAttr :field 'another nil [rest] :another)]})

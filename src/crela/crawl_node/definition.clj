@@ -2,19 +2,21 @@
   (:use [crela.node-form interface destruct parser]
         crela.utils))
 
-(defrecord CrawlNodeDefinition [node-name forms]
+(defrecord CrawlNodeDefinition [node-name attrs merges]
   INodeForm
   (get-attr-names [this]
-    (get-attr-names forms))
+    (get-attr-names attrs))
   Parser
   (parse [this html]
-    (create-record node-name (parse forms html))))
+    (create-record node-name (parse attrs html))))
 
 (defn destruct
   [node-name & forms]
-  (->CrawlNodeDefinition
-    node-name
-    (destruct-forms forms)))
+  (let [partitioned (destruct-forms forms)]
+    (->CrawlNodeDefinition
+      node-name
+      (get-keys&concat partitioned [:field :node])
+      (or (:merge partitioned) []))))
 
 (defn get-symbols
   [crawl-node-def]
@@ -26,4 +28,4 @@
 
 (defn node-attrs
   [crawl-node-def]
-  (filter node-attr? (:forms crawl-node-def)))
+  (filter node-attr? (:attrs crawl-node-def)))

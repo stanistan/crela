@@ -8,14 +8,15 @@
 (fact "destruct"
 
   (destruct 'Foo)
-  => (->CrawlNodeDefinition 'Foo [])
+  => (->CrawlNodeDefinition 'Foo [] [])
 
   (let [n (destruct 'Foo '(with-fields foo _))]
     (get-attr-names n) => [:foo]
     n)
   => (->CrawlNodeDefinition
       'Foo
-      [(->NodeFormAttr :field 'foo nil [] :foo)]))
+      [(->NodeFormAttr :field 'foo nil [] :foo)]
+      []))
 
 (defrecord Foo [foo c])
 (let [data [:a :b :c :d]]

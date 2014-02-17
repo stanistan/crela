@@ -63,3 +63,11 @@
 
 (def symbol->keyword (comp keyword name))
 (def lower-case string/lower-case)
+
+(defn get-keys
+  [m ks]
+  (map #(get m %) ks))
+
+(defn get-keys&concat
+  [m ks]
+  (apply concat (get-keys m ks)))

@@ -30,7 +30,25 @@
 
 (def form-types
   {'with-fields :field
-   'with-nodes :node})
+   'with-nodes :node
+   'merges :merge})
+
+(defmulti destruct-form-type
+  (fn [type form-body]
+    type))
+
+;; Returns a vec of Record names to merge
+(defmethod destruct-form-type
+  :merge
+  [type form-body]
+  (flatten form-body))
+
+;; Returns a vector of NodeFormAttr records
+(defmethod destruct-form-type
+  :default ; :field|:node
+  [type form-body]
+  (let [destruct-body (partial destruct-form-body type)]
+    (->> form-body (partition 2) (map destruct-body))))
 
 (defn get-form-type
   [form-name]
@@ -40,16 +58,13 @@
 
 (defn destruct-form
   [form]
-  (let [type (get-form-type (first form))
-        destruct-body (partial destruct-form-body type)]
-    (->> form
-         rest
-         (partition 2)
-         (map destruct-body))))
+  (let [type (get-form-type (first form))] ;; Ensures a valid form
+    { type
+      (destruct-form-type type (rest form)) }))
 
 (defn destruct-forms
   [forms]
-  (flatten (map destruct-form forms)))
+  (reduce merge (map destruct-form forms)))
 
 (defn get-attr-names-as-symbols
   [form]
