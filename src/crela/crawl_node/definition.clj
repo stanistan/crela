@@ -26,6 +26,12 @@
   [attr]
   (= :node (:type attr)))
 
-(defn node-attrs
-  [crawl-node-def]
-  (filter node-attr? (:attrs crawl-node-def)))
+(defn filter-attrs
+  [f crawl-node-def]
+  (filter f (:attrs crawl-node-def)))
+
+(def node-attrs
+  (partial filter-attrs node-attr?))
+
+(def field-attrs
+  (partial filter-attrs (complement node-attr?)))

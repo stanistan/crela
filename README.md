@@ -4,6 +4,8 @@
 
 A Clojure library designed to crawl the internet in a relational fashion.
 
+Built on top of `enlive`.
+
 ## Usage
 
 Let's say we wanted to grab some data from HN, the usual target.
@@ -40,11 +42,16 @@ With `crawl-node`s, we can create relations.
 ```clj
 (use '[crela core common])
 
+;; We can merge nodes.
+(def-crawl-node HNCommon
+  (with-fields
+    page-title get-page-title))
+
 ;; We can also grab comments and things out of here
 ;; this is the actual item page.
 (def-crawl-node HNArticle
+  (merges HNCommon)
   (with-fields
-    page-title    get-page-title
     article-title [[:.title :a] first get-content]
     article-link  [[:.title :a] first get-link-href]
     score         [[:.subtext :span] first get-content]
@@ -70,6 +77,7 @@ With `crawl-node`s, we can create relations.
 
 ;; This defines another node
 (def-crawl-node HNPage
+  (merges HNCommon)
   (with-nodes
     [HNArticle => articles] [[:.subtext :a]
                              #(map get-link-href %)
@@ -85,6 +93,7 @@ With `crawl-node`s, we can create relations.
 ;;   ....
 ;;   #<Delay@5740f07b: :not-delivered>
 ;;  ,
+;;  :page-title "Hacker News",
 ;;  :url "https://news.ycombinator.com
 
 (deref (first (:articles front-page)))
@@ -97,7 +106,8 @@ Without the alias `HNArticle => articles`, the key would default to `hnarticles`
 ## Todo
 
 - Options for Async
-- A better delayed type (with some semantics for reading/writing)
+- A better delayed type (with some semantics for reading/writing), probably not happening
+- tests for the Core namespace
 
 ## License
 
