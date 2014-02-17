@@ -1,6 +1,5 @@
 (ns crela.core
-  (:require [crela.crawl-node [definition :as d :refer [destruct node-attrs]]
-                              dispatch]
+  (:require [crela.crawl-node [definition :as d :refer [destruct node-attrs]]]
             [crela.node-form [parser :refer [parse]]
                              [interface :refer [get-attr-names]]]
             [crela.url :as url]))
