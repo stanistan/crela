@@ -1,6 +1,8 @@
 (ns crela.core
-  (:require [crela.crawl-node [definition :as d :refer [destruct]]]
-            [crela.node-form [parser :refer [parse]]]
+  (:require [crela.crawl-node [definition :as d :refer [destruct node-attrs]]
+                              dispatch]
+            [crela.node-form [parser :refer [parse]]
+                             [interface :refer [get-attr-names]]]
             [crela.url :as url]))
 
 ;; def-crawl-node adds methods to crawl-node to dispatch on record type
@@ -41,9 +43,27 @@
   [crawl-node-name url & opts]
   (apply scrape crawl-node-name (.toString url) opts))
 
+(declare delayed-scrape)
 (defmethod scrape
   :default
   [crawl-node-name html & opts]
-  (parse
-    (crawl-node crawl-node-name)
-    html))
+  (let [crawl-node-def (crawl-node crawl-node-name)
+        bound-scrape (fn [node-name url] (apply scrape node-name url opts))
+        scraped-data (parse crawl-node-def html)]
+    (delayed-scrape bound-scrape crawl-node-def scraped-data)))
+
+(defn- attr-name
+  [attr]
+  (first (get-attr-names attr)))
+
+(defn delayed-scrape
+  [bound-scrape-fn crawl-node-def found-data]
+  (merge found-data
+         (into {}
+               (map
+                (fn [attr]
+                  (let [k (attr-name attr)
+                        urls (get found-data k)
+                        node-name (:name attr)]
+                    [k (map #(delay (bound-scrape-fn node-name %)) urls)]))
+                (node-attrs crawl-node-def)))))

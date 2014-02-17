@@ -7,10 +7,18 @@
   [html selector]
   (if selector (html/select html selector) html))
 
-(defmulti attr-name (fn [type name] type))
-(defmethod attr-name :node [_ n]
+(defmulti attr-name
+  (fn [type name]
+    type))
+
+(defmethod attr-name
+  :node
+  [_ n]
   (pluralize-name n))
-(defmethod attr-name :default [_ n]
+
+(defmethod attr-name
+  :default
+  [_ n]
   (symbol->keyword n))
 
 (defrecord NodeFormAttr [type name selector fs]

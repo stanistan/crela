@@ -5,12 +5,13 @@
   [el]
   (get-in el [:attrs :href]))
 
+(defn get-content
+  [el]
+  (-> el :content first))
+
 (defn get-page-title
   [el]
-  (-> (html/select el [:title])
-      first
-      :content
-      first))
+  (-> (html/select el [:title]) first get-content))
 
 (defn get-image-src
   [el]

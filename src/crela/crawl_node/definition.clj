@@ -19,3 +19,11 @@
 (defn get-symbols
   [crawl-node-def]
   (get-attr-names-as-symbols crawl-node-def))
+
+(defn node-attr?
+  [attr]
+  (= :node (:type attr)))
+
+(defn node-attrs
+  [crawl-node-def]
+  (filter node-attr? (:forms crawl-node-def)))
