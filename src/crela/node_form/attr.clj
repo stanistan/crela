@@ -7,25 +7,11 @@
   [html selector]
   (if selector (html/select html selector) html))
 
-(defmulti attr-name
-  (fn [type name]
-    type))
+(defrecord NodeFormAttr [type name selector fs name-alias]
 
-(defmethod attr-name
-  :node
-  [_ n]
-  (pluralize-name n))
-
-(defmethod attr-name
-  :default
-  [_ n]
-  (symbol->keyword n))
-
-(defrecord NodeFormAttr [type name selector fs]
   INodeForm
-  (get-attr-names [form-node]
-    [(attr-name (:type form-node)
-                (:name form-node))])
+  (get-attr-names [form-node] [name-alias])
+
   Parser
   (parse [this html]
     (let [n (first (get-attr-names this))

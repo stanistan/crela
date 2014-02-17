@@ -2,15 +2,31 @@
   (:use [crela.node-form utils attr interface]
         crela.utils))
 
+(defmulti attr-name
+  (fn [type name]
+    type))
+
+(defmethod attr-name
+  :node
+  [_ n]
+  (pluralize-name n))
+
+(defmethod attr-name
+  :default
+  [_ n]
+  n)
+
 (defn destruct-form-body
   [type [name opts]]
   (let [[maybe-selector & fs :as opts] (ensure-vector (if (= '_ opts) nil opts))
-        fs (map eval (or (if (selector? maybe-selector) fs opts) []))]
+        fs (map eval (or (if (selector? maybe-selector) fs opts) []))
+        [name _ name-alias] (ensure-vector name)]
     (->NodeFormAttr
       type
       name
       (ensure-selector maybe-selector)
-      (scrape-fs type name fs))))
+      (scrape-fs type name fs)
+      (symbol->keyword (or name-alias (attr-name type name))))))
 
 (def form-types
   {'with-fields :field

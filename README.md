@@ -71,14 +71,14 @@ With `crawl-node`s, we can create relations.
 ;; This defines another node
 (def-crawl-node HNPage
   (with-nodes
-    HNArticle [[:.subtext :a]
-               #(map get-link-href %)
-               #(filter comments-link? %)
-               #(map qualify-hn-link %)]))
+    [HNArticle => articles] [[:.subtext :a]
+                             #(map get-link-href %)
+                             #(filter comments-link? %)
+                             #(map qualify-hn-link %)]))
 
 (def front-page (scrape HNPage "https://news.ycombinator.com"))
 ;; =>
-;; #user.HNPage{:hnarticles
+;; #user.HNPage{:articles
 ;;   #<Delay@36b7f115: :not-delivered>
 ;;   #<Delay@6634b5c3: :not-delivered>
 ;;   #<Delay@e8949a1: :not-delivered>
@@ -87,10 +87,12 @@ With `crawl-node`s, we can create relations.
 ;;  ,
 ;;  :url "https://news.ycombinator.com
 
-(deref (first (:hnarticles front-page)))
+(deref (first (:articles front-page)))
 ;; =>
 ;; #user.HNArticle{.....}
 ```
+
+Without the alias `HNArticle => articles`, the key would default to `hnarticles`.
 
 ## Todo
 
