@@ -13,11 +13,3 @@
   [maybe-selector]
   (when (selector? maybe-selector)
     (ensure-vector maybe-selector)))
-
-;; The types we have are :with-nodes, :with-fields (for now)
-
-(defmulti scrape-fs (fn [type name fs] type))
-(defmethod scrape-fs :with-nodes [_ name fs]
-  (conj fs (partial (create-record name))))
-(defmethod scrape-fs :default [_ _ fs]
-  fs)

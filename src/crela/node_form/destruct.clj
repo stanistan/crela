@@ -25,7 +25,7 @@
       type
       name
       (ensure-selector maybe-selector)
-      (scrape-fs type name fs)
+      fs
       (symbol->keyword (or name-alias (attr-name type name))))))
 
 (def form-types
