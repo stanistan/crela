@@ -4,7 +4,9 @@
 
 A Clojure library designed to crawl the internet in a relational fashion.
 
-Built on top of `enlive`.
+On [Clojars](https://clojars.org/crela)
+
+Built on top of [enlive](https://github.com/cgrand/enlive)
 
 ## Usage
 
