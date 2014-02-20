@@ -4,10 +4,20 @@
                              [interface :refer [get-attr-names]]]
             [crela.url :as url]))
 
-;; def-crawl-node adds methods to crawl-node to dispatch on record type
 ;; .......................................................................................
 
-(defmulti crawl-node eval)
+(defmulti crawl-node eval) ;; methods are attched in def-crawl-node
+
+(def crawl-node? d/crawl-node-definition?)
+
+(declare realize-crawl-node*)
+(defn realize-crawl-node
+  "Recursively attaches attributes of merging crawl nodes to the parent."
+  [node-name-or-def]
+  (realize-crawl-node*
+    (if (crawl-node? node-name-or-def)
+      node-name-or-def
+      (crawl-node node-name-or-def))))
 
 ;; .......................................................................................
 
@@ -22,7 +32,6 @@
       (defmethod crela.core/crawl-node ~node-name [_#] ~node-definition)
       nil)))
 
-;; The main dispatch for grabbing data
 ;; .......................................................................................
 
 (defmulti scrape
@@ -42,25 +51,62 @@
   [crawl-node-name url & opts]
   (apply scrape crawl-node-name (.toString url) opts))
 
-(declare delayed-scrape)
-(declare realize-merge-crawl-node)
+(declare scrape-with-delay)
+(declare opt-bound-scrape)
+
 (defmethod scrape
   :default
   [crawl-node-name html & opts]
-  (let [crawl-node-def (realize-merge-crawl-node (crawl-node crawl-node-name))
-        bound-scrape (fn [node-name url] (apply scrape node-name url opts))
-        scraped-data (parse crawl-node-def html)]
-    (delayed-scrape bound-scrape crawl-node-def scraped-data)))
+  (let [crawl-node-def (realize-crawl-node crawl-node-name)]
+    (scrape-with-delay
+      crawl-node-def
+      (parse crawl-node-def html)
+      (opt-bound-scrape opts))))
 
-(defn- attr-name
-  [attr]
-  (first (get-attr-names attr)))
+;; .......................................................................................
+
+; scrape helpers
+
+(defn- opt-bound-scrape
+  [opts]
+  (fn [node-name url]
+    (apply scrape node-name url opts)))
+
+(defn- delay-fn
+  [attr & [scrape-fn]]
+  (let [scrape-fn (or scrape-fn scrape)]
+    (fn [url]
+      (delay (scrape-fn (:name attr) url)))))
+
+(defn- delay-urls
+  [attr urls & [scrape-fn]]
+  (let [delay-fn (delay-fn attr scrape-fn)]
+    (if (sequential? urls)
+      (map delay-fn urls)
+      (delay-fn urls))))
+
+(defn- delay-data
+  [attr data & [scrape-fn]]
+  (let [data-key (-> attr get-attr-names first)]
+    (when-let [urls (get data data-key)]
+      [data-key (delay-urls attr urls scrape-fn)])))
+
+(defn- scrape-with-delay
+  [crawl-node-def found-data & [scrape-fn]]
+  (let [data-fn #(delay-data % found-data scrape-fn)]
+    (merge
+      found-data
+      (->> crawl-node-def node-attrs (map data-fn) (into {})))))
+
+;; .......................................................................................
+
+; crawl node realization helpers
 
 (defn- merging-node-defs
   [crawl-node-def]
   (->> crawl-node-def :merges (map crawl-node)))
 
-(defn- realize-merge-crawl-node
+(defn- realize-crawl-node*
   [crawl-node-def]
   (loop [merging-node nil
          merging-nodes (merging-node-defs crawl-node-def)
@@ -73,16 +119,3 @@
         (first merging-nodes)
         (concat (merging-node-defs merging-node) (rest merging-nodes))
         (update-in acc-node [:attrs] concat (:attrs merging-node))))))
-
-(defn- delayed-scrape
-  [bound-scrape-fn crawl-node-def found-data]
-  (merge found-data
-         (into {}
-               (map
-                (fn [attr]
-                  (let [k (attr-name attr)
-                        urls (get found-data k)
-                        node-name (:name attr)
-                        delay-fn #(delay (bound-scrape-fn node-name %))]
-                    [k (if (sequential? urls) (map delay-fn urls) (delay-fn urls))]))
-                (node-attrs crawl-node-def)))))

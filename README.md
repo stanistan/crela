@@ -71,6 +71,10 @@ With `crawl-node`s, we can create relations.
   [url]
   (and (not (qualified-link? url)) (re-find #"^item" url)))
 
+(defn paging-link?
+  [el]
+  (= "More" (-> el :content first)))
+
 (defn qualify-hn-link
   [url]
   (str "https://news.ycombinator.com/" url))
@@ -116,11 +120,6 @@ With `crawl-node`s, we can create relations.
 
 Without the alias `HNArticle => articles`, the key would default to `hnarticles`.
 
-## Todo
-
-- Options for Async (seems out of the scope of this library)
-- A better delayed type (with some semantics for reading/writing), probably not happening
-- tests for the Core namespace
 - publish versioned on clojars and add that to the readme (dep on tests)
 
 ## License

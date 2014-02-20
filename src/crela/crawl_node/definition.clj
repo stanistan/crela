@@ -35,3 +35,7 @@
 
 (def field-attrs
   (partial filter-attrs (complement node-attr?)))
+
+(defn crawl-node-definition?
+  [x]
+  (instance? CrawlNodeDefinition x))

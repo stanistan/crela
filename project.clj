@@ -1,4 +1,4 @@
-(defproject crela "0.1.0-SNAPSHOT"
+(defproject crela "0.1.0"
   :description "A Relational Webcrawler"
   :url "http://github.com/stanistan/crela"
   :license {:name "Eclipse Public License"
@@ -7,4 +7,5 @@
                  [enlive "1.1.5"]
                  [clj-http "0.7.8"]]
   :profiles {:dev {:dependencies [[midje "1.6.2"]]
-                   :plugins [[lein-midje "3.1.1"]]}})
+                   :plugins [[lein-midje "3.1.1"]]
+                   :resource-paths ["resources/test"]}})
