@@ -48,7 +48,7 @@
 
 (defmethod scrape
   java.net.URL
-  [crawl-node-name url & opts]
+  [crawl-node-name ^java.net.URL url & opts]
   (apply scrape crawl-node-name (.toString url) opts))
 
 (declare scrape-with-delay)
