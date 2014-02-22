@@ -76,7 +76,9 @@
   [attr & [scrape-fn]]
   (let [scrape-fn (or scrape-fn scrape)]
     (fn [url]
-      (delay (scrape-fn (:name attr) url)))))
+      {:type (:name attr)
+       :url url
+       :content (delay (scrape-fn (:name attr) url))})))
 
 (defn- delay-urls
   [attr urls & [scrape-fn]]

@@ -99,22 +99,23 @@ With `crawl-node`s, we can create relations.
 (def front-page (scrape HNPage "https://news.ycombinator.com"))
 ;; =>
 ;; #user.HNPage{:articles
-;;   #<Delay@36b7f115: :not-delivered>
-;;   #<Delay@6634b5c3: :not-delivered>
-;;   #<Delay@e8949a1: :not-delivered>
-;;   ....
-;;   #<Delay@5740f07b: :not-delivered>
-;;  ,
+;;   [{:type HNArticle,
+;;    :url "..."
+;;    :content #<Delay@36b7f115: :not-delivered>}
+;;    ...}],
 ;;  :page-title "Hacker News",
-;;  :next-page #<Delay@63182c3d: :not-delivered>
+;;  :next-page
+;;    {:type HNPage
+;;     :url "https://news.ycombinator.com/news2"
+;;     :content #<Delay@63182c3d: :not-delivered>}
 ;;  :url "https://news.ycombinator.com
 
-(deref (first (:articles front-page)))
+(deref (:content (first (:articles front-page))))
 ;; =>
 ;; #user.HNArticle{.....}
 
 (let [second-page @(:next-page front-page)]
-  @(first (:articles second-page)))
+  @(:content (first (:articles second-page))))
 ;; =>
 ;; #user.HNArticle{.....}
 

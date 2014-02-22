@@ -67,5 +67,5 @@
     (:page-title front-page) => "Hacker News"
     (str (class front-page)) => #"HNPage"
     (count (:articles front-page)) => 30
-    (:articles front-page) => (has every? delay?)
-    (:next-page front-page) => delay?))
+    (map :content (:articles front-page)) => (has every? delay?)
+    (:content (:next-page front-page)) => delay?))
