@@ -1,12 +1,12 @@
-# crela
+# crela [![Build Status](https://travis-ci.org/stanistan/crela.png?branch=master)](https://travis-ci.org/stanistan/crela)
 
-[![Build Status](https://travis-ci.org/stanistan/crela.png?branch=master)](https://travis-ci.org/stanistan/crela)
+A Clojure library designed to crawl the internet in a relational fashion. Using [enlive's](https://github.com/cgrand/enlive) html selector engine.
 
-A Clojure library designed to crawl the internet in a relational fashion.
+###### On [Clojars](https://clojars.org/crela)
 
-On [Clojars](https://clojars.org/crela)
-
-Built on top of [enlive](https://github.com/cgrand/enlive)
+```
+[crela "0.1.0"]
+```
 
 ## Usage
 
@@ -119,11 +119,8 @@ With `crawl-node`s, we can create relations.
 ;; =>
 ;; #user.HNArticle{.....}
 
+; Without the alias `HNArticle => articles`, the key would default to `hnarticles`.
 ```
-
-Without the alias `HNArticle => articles`, the key would default to `hnarticles`.
-
-- publish versioned on clojars and add that to the readme (dep on tests)
 
 ## License
 
