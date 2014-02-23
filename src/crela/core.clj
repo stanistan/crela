@@ -2,7 +2,8 @@
   (:require [crela.crawl-node [definition :as d :refer [destruct node-attrs]]]
             [crela.node-form [parser :refer [parse]]
                              [interface :refer [get-attr-names]]]
-            [crela.url :as url]))
+            [crela.url :as url]
+            [crela.full-crawl :refer [get-crawler]]))
 
 ;; .......................................................................................
 
@@ -62,6 +63,20 @@
       crawl-node-def
       (parse crawl-node-def html)
       (opt-bound-scrape opts))))
+
+;; .......................................................................................
+
+; Provided a config:
+;
+;   (let [scrape-config { Node1 {:continue [:node2s] :on-scrape some-fn}
+;                         Node2 {:continue nil :on-scrape some-other-fn }}]
+;     (scrape-all Node1 "someurl" scrape-config))
+;
+; Starting with the url on Node1 ("someurl"), this will crawl to related nodes (node2)
+; and and call the on-scrape functions defined on each of them. Once finished, this
+; returns an atom containing a set of crawled urls.
+
+(def scrape-all (get-crawler scrape))
 
 ;; .......................................................................................
 
