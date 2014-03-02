@@ -1,4 +1,4 @@
-(defproject crela "0.1.0"
+(defproject crela "0.1.1"
   :description "A Relational Webcrawler"
   :url "http://github.com/stanistan/crela"
   :license {:name "Eclipse Public License"

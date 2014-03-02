@@ -20,7 +20,7 @@
           (doseq [node nodes]
             (when-not (already-scraped? scraped-urls (:url node))
               (handle-scraped-data
-                (eval (:type node))
+                (:type node)
                 @(:content node)
                 scrape-config
                 scraped-urls))))))))
